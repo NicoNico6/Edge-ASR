@@ -34,14 +34,36 @@
 
 ## 安装
 
+### 作为 Claude Code 插件（推荐）
+
+在 Claude Code 里：
+
+```
+/plugin marketplace add NicoNico6/Edge-ASR
+/plugin install edgestack@edgestack
+```
+
+或在终端：
+
+```bash
+claude plugin marketplace add NicoNico6/Edge-ASR
+claude plugin install edgestack@edgestack
+```
+
+安装后重启会话。入口是 `/edgestack:edge-mode <任务>`，先运行一次 `/edgestack:setup-edgestack` 配置各角色的模型和路径。更新用 `claude plugin update edgestack@edgestack`。
+
+仓库是私有的话，Claude Code 用你本机的 git 凭据拉取，需要先能 `git clone` 这个仓库。本地开发时也可以直接加本地路径：`claude plugin marketplace add /path/to/Edge-ASR`。
+
+插件会在每个会话常驻约 3.8k token（各 skill 的描述），具体内容只在调用时加载。用 `claude plugin details edgestack@edgestack` 查看。
+
+### 手动链接
+
 ```bash
 ./install.sh            # 链接到 ~/.claude/skills 和 ~/.claude/agents
 ./install.sh --project  # 链接到当前目录的 .claude/skills 和 .claude/agents
 ```
 
-或用 skills CLI：`npx skills add <这个仓库>`，选择需要的 skill。
-
-然后运行 `/setup-edgestack` 配置各角色的模型和路径，之后在任务开头用 `/edge-mode <任务>`。
+这种方式下调用名不带前缀：`/edge-mode`、`/setup-edgestack`。
 
 ## 内容
 

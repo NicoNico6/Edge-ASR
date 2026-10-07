@@ -1,0 +1,9 @@
+{
+  "name": "edgestack",
+  "version": "0.1.0",
+  "description": "硬件受约束的 AI 研发工作方式：预算与尺子先行、按物理上限与数据搬运思考、板上实测为准、三轴验收、总账留痕。覆盖压缩、定制模型、移植、计算图与 kernel、异构计算、多级存储、自研引擎、研究实验与交付。",
+  "author": { "name": "NicoNico6" },
+  "repository": "https://github.com/NicoNico6/Edge-ASR",
+  "license": "MIT",
+  "keywords": ["edge-ai", "hardware-aware", "quantization", "kernel", "npu", "methodology", "pstack"]
+}

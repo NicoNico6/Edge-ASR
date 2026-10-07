@@ -11,6 +11,8 @@ description: 硬件受约束的 AI 研发工作方式。先立预算和尺子，
 
 闲聊、一句话能答的问题、一两行的改动，不套 playbook。
 
+**路径约定。** 文中的 `scripts/…`、`templates/…` 指 edgestack 根目录：从 skill 所在目录往上两级（加载 skill 时会显示它的目录）。作为 Claude Code 插件安装时，根目录也可以用 `${CLAUDE_PLUGIN_ROOT}` 表示。脚本按绝对路径调用，例如 `python3 <edgestack 根目录>/scripts/roofline.py`。插件安装后 skill 的调用名带前缀，例如 `/edgestack:edge-mode`。
+
 ## 思维模型
 
 ### 五问

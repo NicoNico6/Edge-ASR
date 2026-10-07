@@ -1,0 +1,13 @@
+{
+  "name": "edgestack",
+  "owner": { "name": "NicoNico6" },
+  "metadata": { "description": "端侧与硬件受约束 AI 研发的方法论插件" },
+  "plugins": [
+    {
+      "name": "edgestack",
+      "source": "./edgestack",
+      "description": "硬件受约束的 AI 研发工作方式，入口 /edgestack:edge-mode。",
+      "version": "0.1.0"
+    }
+  ]
+}
