@@ -21,6 +21,17 @@
 - **agent 陷入无意义的多轮实验**：`converge` 要求每轮先写预测和决策表（所有结果导向同一决定就不跑），跑完先提炼现象和机制再开下一轮，维护 `STATE.md` 认知状态；连续两轮没有新现象就停止换配置、转向或上报。
 - **对论文缺乏判断**：`paper-judgment` 按机制、条件、证据强度、基线公平性判断，给出采用、先复现锚点、忽略三种判决和预计收益。
 
+## 参考 Kernel Design Agents
+
+从 [NVlabs/kda](https://github.com/NVlabs/kda)（代码 Apache 2.0，文档 CC BY 4.0）及其子模块 [ncu-report-skill](https://github.com/mit-han-lab/ncu-report-skill)、[KernelWiki](https://github.com/mit-han-lab/KernelWiki)（MIT）借鉴并改写为跨硬件通用的机制：
+
+- 方法论仓库与任务工作区分离，任务专属的验证器、阈值、数据、产物不进方法论。
+- 任务契约（目标、正确性、验证命令、评测命令、晋升条件）和 `docs/draft.md` 先于实现：**task-contract**。
+- 候选谱系 `candidates.jsonl`，拒绝必须写原因：`scripts/candidates.py`。
+- 剖析 → 诊断 → 计划，每次剖析一个运行目录，用真实张量，程序化解析报告，信号到原因到修复的诊断手册：**profile**、`references/diagnosis-playbook.md`。
+- 结构化领域知识库，带置信度与截止日期：**knowledge-base**。
+- 吸取其公开报告的教训（早期候选靠硬编码测试规律拿到虚高加速，在真实数据上失败）：**principle-validate-on-real-workload**。
+
 ## 安装
 
 ```bash
@@ -38,13 +49,13 @@
 |---|---|---|
 | 入口 | 1 | `skills/edge-mode/` |
 | Playbook | 30 | `skills/edge-mode/playbooks/` |
-| 原则 | 39 | `skills/principle-*/` |
-| 工作流 skill | 17 | `skills/<名字>/` |
+| 原则 | 40 | `skills/principle-*/` |
+| 工作流 skill | 19 | `skills/<名字>/` |
 | Agent | 2 | `agents/`（edge-agent、caliber-cop） |
 | 模板 | 8 | `templates/`（预算卡、硬件画像卡、总账、对照、底稿、回归、runs.tsv、decisions.tsv） |
-| 脚本 | 6 | `scripts/` |
+| 脚本 | 7 | `scripts/` |
 
-**工作流 skill：** converge（实验收敛协议）、paper-judgment（论文判断）、budget、roofline、profile、opcensus、parity、verify-inputs、ledger、side-by-side、stability、benchmark-checklist、interrogate、unslop、technical-writing、show-me-your-work、figure-it-out，外加 setup-edgestack。
+**工作流 skill：** task-contract（任务契约与草稿）、knowledge-base（结构化知识库）、converge（实验收敛协议）、paper-judgment（论文判断）、budget、roofline、profile、opcensus、parity、verify-inputs、ledger、side-by-side、stability、benchmark-checklist、interrogate、unslop、technical-writing、show-me-your-work、figure-it-out，外加 setup-edgestack。
 
 **可执行的部分**（必须不发生的事用脚本拦，不靠文字）：
 
@@ -53,6 +64,7 @@
 | `roofline.py` | 按带宽、算力、各组件位宽估算每步时间、实时率、所需带宽，和实测对比 |
 | `parity_diff.py` | 两个 dump 目录逐张量比较，报第一个发散点 |
 | `runs.py` | 追加总账行，缺 commit、设备、口径、样本数等字段时拒绝写入；检查口径混用 |
+| `candidates.py` | 候选谱系：父子关系、状态，晋升必须附证据，拒绝必须附原因 |
 | `idle_gpus.sh` | 发现持续空闲的 GPU |
 | `log.sh` | 追加决策轨迹 |
 | `check-skills.py` | 检查本仓库 skill 的 frontmatter、链接、原则引用、标点 |

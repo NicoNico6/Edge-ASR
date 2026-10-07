@@ -10,6 +10,22 @@ disable-model-invocation: true
 
 剖析的是交付的那条流水线，不是单独的模型前向。剖析开销会拖慢运行，所以剖析运行的数字不用于汇报，汇报用不开剖析的运行。
 
+## 顺序
+
+剖析 → 诊断 → 计划，按这个顺序，不猜（来自 mit-han-lab/ncu-report-skill 的黄金规则）。先拿到剖析数据，再对照诊断手册（`../edge-mode/references/diagnosis-playbook.md`）给出诊断，最后写按证据和预期收益排序的计划。
+
+## 运行目录
+
+每次剖析一个新目录 `profile/<run_name>/`，里面分 `harness/`、`reports/`、`analysis/`、`REPORT.md`，不复用旧目录。REPORT.md 开头写剖析设置：harness 是什么、用了哪些真实负载与形状、覆盖了哪些分派路径、工具与编译选项、指标名的差异。
+
+## 输入
+
+用真实负载的代表性形状和真实张量（**principle-validate-on-real-workload**）。输入长度可变时，从真实分布里选几个有代表性的形状，不随手造。需要源码级归因时，建独立 harness（编译带行号信息），单独运行这个 kernel。
+
+## 解析
+
+用工具的程序接口或导出文件解析剖析报告，不靠肉眼看命令行输出。解析脚本放进 `analysis/`，可重跑。
+
 ## 步骤
 
 1. 定每步预算：实时类任务按帧或块的时长（例如每 80 ms 一步），吞吐类按目标每秒步数。

@@ -59,8 +59,10 @@ batch 为 1 的推理在大模型服务和端侧落在同一个区间，多数�
 下面每条触发对应一个原则叶子或 skill。所有 skill 都在本目录的兄弟目录里，按路径读 `../<名字>/SKILL.md`，原则叶子是 `../principle-<名字>/SKILL.md`。回复里点名改变了某个决定的原则，只点本次会话读过叶子的那些，一句说清它改了什么。
 
 - 碰模型或系统之前，没有预算卡就先写 → **budget** skill。
+- 有候选迭代的实现任务（kernel、算子、引擎能力、移植、压缩），先写任务契约和 `docs/draft.md`，草稿存在之前不写实现 → **task-contract** skill。候选登记父子关系，拒绝必须写原因（`scripts/candidates.py`）。
+- 候选晋升前在真实负载和留出集上验证，好得出乎意料的结果先按「测试被钻了空子」排查（**principle-validate-on-real-workload**）。
 - 任何比较之前，尺子已冻结、噪声底已知 → **Baseline harness** playbook（`playbooks/baseline-harness.md`）。
-- 报任何数字，带口径、运行次数和范围、证据标签（见「回复写法」）。性能数字先过 **benchmark-checklist** skill。
+- 报任何数字，带口径、运行次数和范围、证据标签（见「回复写法」）。性能数字先过 **benchmark-checklist** skill。剖析按「剖析 → 诊断 → 计划」走 **profile** skill 和 `references/diagnosis-playbook.md`。积累下来的硬件与优化知识进 **knowledge-base**。
 - 性能判断旁边放一个物理上限估算 → **roofline** skill。实测离上限超过 1.5 倍时，先做逐阶段剖析（**profile** skill），不要继续调模型。
 - 新硬件、新运行时、新编译器，先做包络普查再动图 → **opcensus** skill。
 - 设备上质量下降或和参考对不上，先走分层对齐再提假设 → **parity** skill。
@@ -104,6 +106,7 @@ batch 为 1 的推理在大模型服务和端侧落在同一个区间，多数�
 - **分层对齐阶梯**（**principle-parity-ladder**）。新的精度、运行时、图变换或硬件。从浮点到板上逐级对齐，逐层 dump 找第一个发散点，对不上先怀疑观测方法。
 - **每个数字带口径**（**principle-caliber-on-every-number**）。记录、汇报、比较任何数字。数据与切片、样本数、输入规格、设备与固件、时钟与功耗模式、精度状态、预热与运行次数、版本。口径不同的数字不放在一起比。
 - **先测噪声底**（**principle-noise-floor-first**）。任何改进或回归的判断。先量重复运行和换 seed 的抖动，差异小于噪声底写「不可测量」。
+- **在真实负载上验证**（**principle-validate-on-real-workload**）。评估 agent 迭代出的候选时。用真实输入、代表性形状、迭代中没见过的留出集，检查是否针对测试做了特判。
 - **失败计数单列**（**principle-failure-counts-beside-means**）。数据集级指标。均值旁边单列空输出、循环、解析失败、超时、崩溃、OOM 的条数。
 - **三轴验收**（**principle-three-axes**）。选部署点、宣布可发货。质量、成本、稳定性三轴同时过线，精度与稳定的冲突写进规格。
 - **以感知为准**（**principle-perception-decides**）。语音、图像、深度、视频、交互类输出。自动指标是参考，人对并排产物的判断记进总账。

@@ -18,6 +18,10 @@ disable-model-invocation: true
 
 `scripts/runs.py check runs.tsv` 检查缺字段和口径混用。
 
+## 候选谱系
+
+有候选迭代的任务（kernel、配置、结构）另记 `candidates.jsonl`：`scripts/candidates.py add|set|tree|check`。每个候选写父候选，晋升必须附证据路径，拒绝和修改必须附原因。
+
 ## 文档体裁
 
 模板在 `../../templates/`。
