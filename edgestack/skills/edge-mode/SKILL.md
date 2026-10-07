@@ -66,6 +66,8 @@ batch 为 1 的推理在大模型服务和端侧落在同一个区间，多数�
 - 设备上质量下降或和参考对不上，先走分层对齐再提假设 → **parity** skill。
 - 引入别人的方法、数据或前沿技术，先核实来源、在自己的尺子上复现锚点 → **verify-inputs** skill。
 - 能用实验回答的分歧，跑最便宜的判别实验，不去问人（**principle-cheapest-discriminating-experiment**）。
+- 任何多轮实验、训练、调参：每轮先写轮次卡（预测与决策表），跑完先提炼现象再开下一轮，维护 STATE.md → **converge** skill。连续两轮没有新现象就停止换配置。
+- 读论文、选方法：按机制、条件、证据强度判断，给出采用、先复现、忽略的判决 → **paper-judgment** skill。
 - 每个实验结果，保留的和被证伪的，都写一行总账 → **ledger** skill。
 - 集群或板上的长作业，逐条落盘、查维护窗口、查闲置资源 → **Long job** playbook（`playbooks/long-job.md`）。
 - 质量涉及听感、观感的输出，交付里放并排的可感知产物 → **side-by-side** skill。
@@ -83,6 +85,7 @@ batch 为 1 的推理在大模型服务和端侧落在同一个区间，多数�
 - **预算先于模型**（**principle-budget-before-model**）。开始任何模型或系统工作之前。写预算卡：质量底线、时间（时延、实时率、吞吐）、空间（各级存储容量与每步字节）、能量与热、稳定性规格。硬约束是准入条件。
 - **代价函数就是约束**（**principle-cost-function-is-the-constraint**）。设计搜索、剪枝、位宽分配、调度策略时。优化的量必须是硬件真正卡住的量（MiB、每步字节、算子包络、cycles、能量），代理量要先证明和它同序。
 - **包络先于移植**（**principle-envelope-before-port**）。新硬件、新运行时、新编译器。先普查算子、形状、对齐、dtype、控制流、同步语义和失败模式，写成带版本号的包络表。每条加速路径配自检、门控与回退。
+- **系统预算先分**（**principle-system-budget-first**）。一个硬件上跑多个模型时。先按最坏并发分内存、带宽、时间片、功耗和时延链，再推出每个模型的预算。
 - **最坏输入先行**（**principle-worst-case-first**）。验收、选工作点、写规格时。先测包络边缘：最长输入、最难场景、静音与噪声、热降频、内存峰值、并发。
 
 **物理与系统**
@@ -111,6 +114,9 @@ batch 为 1 的推理在大模型服务和端侧落在同一个区间，多数�
 - **引用先例**（**principle-cite-precedent**）。提出方法、启发式、超参或结论时。说清来源（论文、源码、已有实验），自创的标为自创并给出最便宜的验证，能把源码放进上下文就放进来。
 - **核实输入**（**principle-verify-the-inputs**）。用到数据、对手方法、教师输出、引用时。数据核实到分片、字节、许可与重叠，对手方法在同框架同硬件上复现锚点，引用来自真实的文献库。
 - **最便宜的判别实验**（**principle-cheapest-discriminating-experiment**）。两个解释或两条路线相持时。先跑能把它们分开的最便宜的实验，判一条路线死刑要有机制证据。
+- **先预测再运行**（**principle-predict-before-run**）。发起任何实验之前。写下预测和每种结果对应的决定，所有结果导向同一决定就不跑。
+- **提炼现象再继续**（**principle-extract-the-phenomenon**）。每轮实验结束后。先写现象、和预测的差、机制假设，下一轮针对机制；连续两轮没有新现象就重新定问题。
+- **按机制判断论文**（**principle-judge-papers-by-mechanism**）。读论文决定是否采用时。机制、条件、证据强度、在我们条件下的预计收益，四件事都写出来。
 - **攻击前提**（**principle-attack-the-premise**）。两次修复基于同一前提都失败时。停止第三次修复，先核查前提本身。
 - **修根因**（**principle-fix-root-causes**）。调试时。先复现，再二分，问为什么直到根因。
 - **懒惰协议**（**principle-laziness-protocol**）。写代码、搭实验、改结构时。最小改动，偏向删除，研究代码写能复跑的脚本而不建框架。
@@ -219,10 +225,12 @@ edgestack 以 Claude Code 为主写成。在其他 harness 里按下面对应。
 **模型侧**
 
 - **Compress（压缩）**。量化、剪枝、蒸馏、结构替换，把模型压进预算并在板上兑现。`playbooks/compress.md`。
+- **Custom model（定制模型）**。为硬件构造专用模型：路线判断（现成、量化、剪枝加修复、蒸馏、多阶段训练），阶段门，小规模代理，按收敛协议推进。`playbooks/custom-model.md`。
 - **Research experiment（研究实验）**。一个假设、一组消融、一次对手方法复现。`playbooks/research-experiment.md`。
 
 **系统侧**
 
+- **System on device（机上多模型系统）**。一块硬件上跑唤醒、识别、LLM、合成、说话人分离等多个模型：系统预算、时延链、共享、常驻与加载、最坏并发。`playbooks/system-on-device.md`。
 - **Port（移植）**。把模型搬到新运行时、编译器、NPU 或自写的 runtime。`playbooks/port.md`。
 - **Graph optimization（计算图优化）**。融合、静态化、布局、重排、内存规划、跨单元切分。`playbooks/graph-optimization.md`。
 - **Kernel（算子）**。写或调一个算子：参考实现对拍、单算子上限估算、tiling 与布局。`playbooks/kernel.md`。

@@ -2,7 +2,7 @@
 
 **你拥有在板上兑现的压缩结果。模拟器上的增益不算。**
 
-1. 从预算卡确认硬墙（体积、每步字节、算子包络）。代价函数设成它（**principle-cost-function-is-the-constraint**）。
+1. 差距超过量化和剪枝能补的范围时，转 **Custom model** playbook。从预算卡确认硬墙（体积、每步字节、算子包络）。代价函数设成它（**principle-cost-function-is-the-constraint**）。
 2. 算上限：各组件参数量、位宽与搬运字节，哪部分占大头（**roofline** skill）。压大头。
 3. 量化按阶梯走：先拿运行时实际的量化名单与标定方法；PTQ（逐通道、标定集组成与大小、标定算法）先做，扫位宽找断崖；PTQ 不够再上 QAT，QAT 的模拟损伤先和板上损伤对齐，对不齐不训练（**principle-parity-ladder**）。
 4. 保留高精度的层（「岛」）按实测敏感度选，并计入跨精度转换开销（**principle-price-every-crossing**）。

@@ -14,6 +14,12 @@
 
 完整内容见 [`skills/edge-mode/SKILL.md`](skills/edge-mode/SKILL.md)。
 
+## 解决的典型问题
+
+- **为硬件定制模型**：一块芯片上要跑唤醒、识别、LLM、合成、说话人分离。`System on device` 先分系统预算和时延链，`Custom model` 按差距选路线（量化、剪枝加修复、蒸馏、预训练、后训练、DMD、强化学习、OPD），每个阶段有进入、退出、中止的门，参考 `skills/edge-mode/references/training-stages.md`。
+- **agent 陷入无意义的多轮实验**：`converge` 要求每轮先写预测和决策表（所有结果导向同一决定就不跑），跑完先提炼现象和机制再开下一轮，维护 `STATE.md` 认知状态；连续两轮没有新现象就停止换配置、转向或上报。
+- **对论文缺乏判断**：`paper-judgment` 按机制、条件、证据强度、基线公平性判断，给出采用、先复现锚点、忽略三种判决和预计收益。
+
 ## 安装
 
 ```bash
@@ -30,14 +36,14 @@
 | 类别 | 数量 | 位置 |
 |---|---|---|
 | 入口 | 1 | `skills/edge-mode/` |
-| Playbook | 27 | `skills/edge-mode/playbooks/` |
-| 原则 | 34 | `skills/principle-*/` |
-| 工作流 skill | 15 | `skills/<名字>/` |
+| Playbook | 29 | `skills/edge-mode/playbooks/` |
+| 原则 | 38 | `skills/principle-*/` |
+| 工作流 skill | 17 | `skills/<名字>/` |
 | Agent | 2 | `agents/`（edge-agent、caliber-cop） |
 | 模板 | 8 | `templates/`（预算卡、硬件画像卡、总账、对照、底稿、回归、runs.tsv、decisions.tsv） |
 | 脚本 | 6 | `scripts/` |
 
-**工作流 skill：** budget、roofline、profile、opcensus、parity、verify-inputs、ledger、side-by-side、stability、benchmark-checklist、interrogate、unslop、technical-writing、show-me-your-work、figure-it-out，外加 setup-edgestack。
+**工作流 skill：** converge（实验收敛协议）、paper-judgment（论文判断）、budget、roofline、profile、opcensus、parity、verify-inputs、ledger、side-by-side、stability、benchmark-checklist、interrogate、unslop、technical-writing、show-me-your-work、figure-it-out，外加 setup-edgestack。
 
 **可执行的部分**（必须不发生的事用脚本拦，不靠文字）：
 
