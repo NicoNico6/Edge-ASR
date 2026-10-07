@@ -17,6 +17,7 @@
 ## 解决的典型问题
 
 - **为硬件定制模型**：一块芯片上要跑唤醒、识别、LLM、合成、说话人分离。`System on device` 先分系统预算和时延链，`Custom model` 按差距选路线（量化、剪枝加修复、蒸馏、预训练、后训练、DMD、强化学习、OPD），每个阶段有进入、退出、中止的门，参考 `skills/edge-mode/references/training-stages.md`。
+- **按硬件设计结构**：`Architecture design` 和 `references/architecture-patterns.md` 把 GQA、MLA、局部注意力、线性注意力与 delta rule（Gated DeltaNet、KDA）、混合比例、MoE、草稿头按「省了什么字节、付出什么、端侧注意什么」整理，以 KDA 为样本说明结构要和它的 kernel 一起设计。
 - **agent 陷入无意义的多轮实验**：`converge` 要求每轮先写预测和决策表（所有结果导向同一决定就不跑），跑完先提炼现象和机制再开下一轮，维护 `STATE.md` 认知状态；连续两轮没有新现象就停止换配置、转向或上报。
 - **对论文缺乏判断**：`paper-judgment` 按机制、条件、证据强度、基线公平性判断，给出采用、先复现锚点、忽略三种判决和预计收益。
 
@@ -36,8 +37,8 @@
 | 类别 | 数量 | 位置 |
 |---|---|---|
 | 入口 | 1 | `skills/edge-mode/` |
-| Playbook | 29 | `skills/edge-mode/playbooks/` |
-| 原则 | 38 | `skills/principle-*/` |
+| Playbook | 30 | `skills/edge-mode/playbooks/` |
+| 原则 | 39 | `skills/principle-*/` |
 | 工作流 skill | 17 | `skills/<名字>/` |
 | Agent | 2 | `agents/`（edge-agent、caliber-cop） |
 | 模板 | 8 | `templates/`（预算卡、硬件画像卡、总账、对照、底稿、回归、runs.tsv、decisions.tsv） |

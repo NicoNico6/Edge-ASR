@@ -94,6 +94,7 @@ batch 为 1 的推理在大模型服务和端侧落在同一个区间，多数�
 - **字节就是预算**（**principle-bytes-are-the-budget**）。batch 小、内存受限、存在分层存储时。按层级记每步搬运的字节，先减少搬运、提高复用与局部性，再谈算得更快。
 - **每次跨界都有价**（**principle-price-every-crossing**）。异构切分、精度切换、主机与设备交互、进程或线程边界。转换、拷贝、同步、下发、唤醒单独计时入账，跨界次数是设计变量。
 - **归因到层**（**principle-attribute-to-the-layer**）。任何时延、内存或质量的差距。把差距拆到栈的某一层，每次只换一层来二分，始终保留一条浮点参考路径。
+- **结构和执行形式一起设计**（**principle-design-the-kernel-with-the-math**）。设计或修改结构、注意力、缓存形式时。同时决定分块或扫描形式、每步字节、状态大小、所需算子，没有高效执行形式的结构在端侧不是更好的结构。
 - **杠杆按收益排序**（**principle-rank-levers-by-yield**）。决定下一步做什么时。模型侧和系统侧的杠杆放进同一张表，按买到的指标除以花费的时间、内存或工程量排序。
 
 **测量**
@@ -225,6 +226,7 @@ edgestack 以 Claude Code 为主写成。在其他 harness 里按下面对应。
 **模型侧**
 
 - **Compress（压缩）**。量化、剪枝、蒸馏、结构替换，把模型压进预算并在板上兑现。`playbooks/compress.md`。
+- **Architecture design（结构设计）**。按硬件选或改结构：注意力形式（GQA、MLA、局部、线性与 delta rule、混合比例）、MoE、草稿头，结构与 kernel 一起定。参考 `references/architecture-patterns.md`。`playbooks/architecture-design.md`。
 - **Custom model（定制模型）**。为硬件构造专用模型：路线判断（现成、量化、剪枝加修复、蒸馏、多阶段训练），阶段门，小规模代理，按收敛协议推进。`playbooks/custom-model.md`。
 - **Research experiment（研究实验）**。一个假设、一组消融、一次对手方法复现。`playbooks/research-experiment.md`。
 
